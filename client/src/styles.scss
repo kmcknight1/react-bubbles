@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
 
-html,
 body,
 #root,
 .App {
@@ -13,7 +12,7 @@ body,
 .App {
   font-family: "Montserrat", sans-serif;
   text-align: center;
-  display: flex;
+  // display: flex;
 
   svg {
     height: 100%;
@@ -95,5 +94,46 @@ form {
     color: white;
     padding: 3px 8px;
     margin-top: 16px;
+  }
+}
+
+.modal-background {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 99;
+
+  .modal-box {
+    position: absolute;
+    padding: 2rem 1rem;
+    background: white;
+    border-radius: 8px;
+    width: 15rem;
+    top: 30%;
+  }
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .login-form {
+    width: 50%;
+    height: 8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .propmt-link {
+    color: rgb(55, 55, 212);
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
