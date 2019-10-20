@@ -5,8 +5,8 @@ import { buttonVariant } from "../variables";
 const Modal = props => {
   const { content, handleClose } = props;
   return (
-    <div className="modal-background">
-      <div className="modal-box">
+    <div className="modal-background" onClick={handleClose}>
+      <div className="modal-box" onClick={e => e.stopPropagation()}>
         {content}
         <Button variant={buttonVariant} onClick={handleClose}>
           Close

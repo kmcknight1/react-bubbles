@@ -12,5 +12,6 @@ export function axiosWithAuth() {
 }
 
 export function handleChange(e, set) {
-  set(e.target.value);
+  let value = e.target.value;
+  set(value.replace(/ /g, ""));
 }

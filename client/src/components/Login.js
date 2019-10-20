@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { FormGroup, Input, Button } from "@material-ui/core";
+import { Input, Button } from "@material-ui/core";
 
 import { handleChange } from "../functions";
 import { buttonVariant } from "../variables";
 import Modal from "./Modal";
 
 const Login = props => {
-  // make a post request to retrieve a token from the api
-  // when you have handled the token, navigate to the BubblePage route
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -22,7 +20,10 @@ const Login = props => {
         props.history.push("/bubbles");
       })
       .catch(err => {
-        setError(err.response.data.error);
+        if (err.response.data) {
+          setError(err.response.data.error);
+        }
+        console.log(err);
       });
   }
 

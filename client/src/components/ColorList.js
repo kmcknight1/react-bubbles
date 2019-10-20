@@ -30,16 +30,19 @@ const ColorList = ({ colors, updateColors }) => {
   return (
     <div className="colors-wrap">
       <p>colors</p>
+      <hr />
       <ul>
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
-              <span className="delete" onClick={e => {
-                    e.stopPropagation();
-                    deleteColor(color)
-                  }
-                }>
-                  x
+              <span
+                className="delete"
+                onClick={e => {
+                  e.stopPropagation();
+                  deleteColor(color);
+                }}
+              >
+                x
               </span>{" "}
               {color.color}
             </span>

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import { axiosWithAuth } from "../functions";
 import Bubbles from "./Bubbles";
 import ColorList from "./ColorList";
 
-const BubblePage = () => {
+const BubblePage = props => {
   const [colorList, setColorList] = useState([]);
-  // fetch your colors data from the server when the component mounts
-  // set that data to the colorList state
+
+  console.log("HISTORY", props.history);
 
   useEffect(() => {
     axiosWithAuth()
@@ -17,11 +16,13 @@ const BubblePage = () => {
       .catch(err => console.log(err.response));
   }, []);
 
+  useEffect(() => () => localStorage.removeItem("token"), []);
+
   return (
-    <>
+    <div className="bubble-page">
       <ColorList colors={colorList} updateColors={setColorList} />
       <Bubbles colors={colorList} />
-    </>
+    </div>
   );
 };
 
