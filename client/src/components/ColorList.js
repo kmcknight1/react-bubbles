@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { axiosWithAuth } from "../functions";
+import { AddCircle, ArrowBack } from "@material-ui/icons";
+import { useHistory } from "react-router-dom";
 
-// import {handleChange} from "../functions";
+import Modal from "./Modal";
 
 const initialColor = {
   color: "",
@@ -10,8 +12,12 @@ const initialColor = {
 
 const ColorList = ({ colors, updateColors }) => {
   const [editing, setEditing] = useState(false);
+  const [adding, setAdding] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
   const [newColor, setNewColor] = useState(initialColor);
+  const [noInputModal, setNoInputModal] = useState(false);
+  const [properHexModal, setProperHexModal] = useState(false);
+  const history = useHistory();
 
   const editColor = color => {
     setEditing(true);
@@ -30,6 +36,7 @@ const ColorList = ({ colors, updateColors }) => {
         );
       })
       .catch(err => console.log(err));
+    setEditing(false);
   };
 
   const deleteColor = deletingColor => {
@@ -42,18 +49,49 @@ const ColorList = ({ colors, updateColors }) => {
       .catch(err => console.log(err.response));
   };
 
-  const addColor = () => {
-    axiosWithAuth()
-      .post("/api/colors", newColor)
-      .then(res => {
-        updateColors([...colors, newColor]);
-      })
-      .catch(err => console.log(err));
+  const addColor = e => {
+    e.preventDefault();
+    if (!newColor.code.hex || !newColor.color) {
+      setNoInputModal(true);
+    } else if (newColor.code.hex[0] !== "#" || newColor.code.hex.length !== 7) {
+      setProperHexModal(true);
+    } else {
+      axiosWithAuth()
+        .post("/api/colors", newColor)
+        .then(res => {
+          updateColors([...colors, newColor]);
+          setAdding(false);
+        })
+        .catch(err => console.log(err));
+    }
   };
 
   return (
     <div className="colors-wrap">
-      <p>colors</p>
+      {noInputModal && (
+        <Modal
+          content={
+            <h2>Opps! Looks like you forgot to fill in all required feilds.</h2>
+          }
+          handleClose={() => setNoInputModal(false)}
+        />
+      )}
+      {properHexModal && (
+        <Modal
+          content={<h2>Please enter a valid hex code.</h2>}
+          handleClose={() => setProperHexModal(false)}
+        />
+      )}
+      <div className="color-list-head">
+        <ArrowBack
+          onClick={() => {
+            localStorage.removeItem("token");
+            history.push("/");
+          }}
+        />
+        <p>colors</p>
+        <AddCircle onClick={() => setAdding(!adding)} />
+      </div>
       <hr />
       <ul>
         {colors.map(color => (
@@ -108,31 +146,43 @@ const ColorList = ({ colors, updateColors }) => {
         </form>
       )}
       <div className="spacer" />
-      <form onSubmit={addColor}>
-        <legend>add new color</legend>
-        <label>
-          color name:
-          <input
-            onChange={e => setNewColor({ ...newColor, color: e.target.value })}
-            value={newColor.color}
-          />
-        </label>
-        <label>
-          hex code:
-          <input
-            onChange={e =>
-              setNewColor({
-                ...newColor,
-                code: { hex: e.target.value }
-              })
-            }
-            value={newColor.code.hex}
-          />
-        </label>
-        <div className="button-row">
-          <button type="submit">save</button>
-        </div>
-      </form>
+      {adding && (
+        <form onSubmit={e => addColor(e)}>
+          <legend>add new color</legend>
+          <label>
+            color name:
+            <input
+              onChange={e =>
+                setNewColor({ ...newColor, color: e.target.value })
+              }
+              value={newColor.color}
+            />
+          </label>
+          <label>
+            hex code:
+            <input
+              onChange={e =>
+                setNewColor({
+                  ...newColor,
+                  code: { hex: e.target.value }
+                })
+              }
+              value={newColor.code.hex}
+            />
+          </label>
+          <div className="button-row">
+            <button type="submit">save</button>
+            <button
+              onClick={e => {
+                e.preventDefault();
+                setAdding(false);
+              }}
+            >
+              cancel
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 };

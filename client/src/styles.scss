@@ -44,6 +44,12 @@ body,
   border-bottom-right-radius: 10px;
   padding-bottom: 1rem;
 
+  .color-list-head {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+
   ul {
     list-style: none;
     text-align: start;
