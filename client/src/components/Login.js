@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { FormGroup, Input, Button } from "@material-ui/core";
 
-import handleChange from "../functions";
+import { handleChange } from "../functions";
 import { buttonVariant } from "../variables";
 import Modal from "./Modal";
 

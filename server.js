@@ -92,8 +92,8 @@ let colors = [
 let nextId = 12;
 
 function authenticator(req, res, next) {
-  const { Authorization } = req.headers;
-  if (Authorization === token) {
+  const { authorization } = req.headers;
+  if (authorization === token) {
     next();
   } else {
     res.status(403).json({ error: "User must be logged in to do that." });
