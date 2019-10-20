@@ -6,10 +6,9 @@ import handleChange from "../functions";
 import { buttonVariant } from "../variables";
 import Modal from "./Modal";
 
-const Login = () => {
+const Login = props => {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,6 +19,7 @@ const Login = () => {
       .post("http://localhost:5000/api/login", body)
       .then(res => {
         localStorage.setItem("token", res.data.payload);
+        props.history.push("/bubbles");
       })
       .catch(err => {
         setError(err.response.data.error);
