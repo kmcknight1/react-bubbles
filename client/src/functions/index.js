@@ -15,3 +15,15 @@ export function handleChange(e, set) {
   let value = e.target.value;
   set(value.replace(/ /g, ""));
 }
+
+export function reset(setters, values) {
+  values.map((value, index) => {
+    if (typeof value === "number") {
+      setters[index](0);
+    } else if (typeof value === "string") {
+      setters[index]("");
+    } else if (typeof value === "boolean") {
+      setters[index](false);
+    }
+  });
+}
