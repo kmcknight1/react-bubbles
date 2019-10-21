@@ -43,8 +43,8 @@ const ColorList = ({ colors, updateColors }) => {
             colors.map(color => (color.id === colorId ? colorObj : color))
           );
           reset(
-            [setEditing, setColorName, setColorCode],
-            [editing, colorName, colorCode]
+            [editing, colorName, colorCode],
+            [setEditing, setColorName, setColorCode]
           );
         })
         .catch(err => console.log(err));
@@ -109,8 +109,8 @@ const ColorList = ({ colors, updateColors }) => {
         <AddCircle
           onClick={() => {
             reset(
-              [setEditing, setColorName, setColorCode],
-              [editing, colorName, colorCode]
+              [editing, colorName, colorCode],
+              [setEditing, setColorName, setColorCode]
             );
             setAdding(!adding);
           }}

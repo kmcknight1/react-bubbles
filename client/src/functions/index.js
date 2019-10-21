@@ -16,7 +16,7 @@ export function handleChange(e, set) {
   set(value.replace(/ /g, ""));
 }
 
-export function reset(setters, values) {
+export function reset(values, setters) {
   values.map((value, index) => {
     if (typeof value === "number") {
       setters[index](0);
