@@ -103,6 +103,7 @@ const ColorList = ({ colors, updateColors }) => {
             localStorage.removeItem("token");
             history.push("/");
           }}
+          className="icon"
         />
         <p>colors</p>
         <AddCircle
@@ -113,6 +114,7 @@ const ColorList = ({ colors, updateColors }) => {
             );
             setAdding(!adding);
           }}
+          className="icon"
         />
       </div>
       <hr />
@@ -129,7 +131,6 @@ const ColorList = ({ colors, updateColors }) => {
               >
                 x
               </span>
-              {/* {" "} */}
               {color.color}
             </span>
             <div

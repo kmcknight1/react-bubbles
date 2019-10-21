@@ -48,6 +48,15 @@ body,
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+
+    .icon {
+      color: rgb(32, 32, 32);
+
+      &:hover {
+        cursor: pointer;
+        opacity: 0.6;
+      }
+    }
   }
 
   ul {
@@ -159,6 +168,7 @@ form {
 
     &:hover {
       cursor: pointer;
+      text-decoration: underline;
     }
   }
 }
