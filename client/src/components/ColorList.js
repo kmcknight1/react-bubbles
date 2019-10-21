@@ -1,46 +1,57 @@
 import React, { useState } from "react";
-import { axiosWithAuth } from "../functions";
+import { axiosWithAuth, reset, handleChange } from "../functions";
 import { AddCircle, ArrowBack } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 
 import Modal from "./Modal";
 
-const initialColor = {
-  color: "",
-  code: { hex: "" }
-};
-
 const ColorList = ({ colors, updateColors }) => {
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
-  const [colorToEdit, setColorToEdit] = useState(initialColor);
-  const [newColor, setNewColor] = useState(initialColor);
+  const [colorName, setColorName] = useState("");
+  const [colorCode, setColorCode] = useState("");
+  const [colorId, setColorId] = useState(0);
   const [noInputModal, setNoInputModal] = useState(false);
   const [properHexModal, setProperHexModal] = useState(false);
   const history = useHistory();
 
   const editColor = color => {
     setEditing(true);
-    setColorToEdit(color);
+    setAdding(false);
+    setColorId(color.id);
+    setColorCode(color.code.hex);
+    setColorName(color.color);
   };
 
   const saveEdit = e => {
     e.preventDefault();
-    axiosWithAuth()
-      .put(`/api/colors/${colorToEdit.id}`, colorToEdit)
-      .then(res => {
-        updateColors(
-          colors.map(color =>
-            color.id === colorToEdit.id ? colorToEdit : color
-          )
-        );
-      })
-      .catch(err => console.log(err));
-    setEditing(false);
+    const colorObj = {
+      color: colorName,
+      code: { hex: colorCode },
+      id: colorId
+    };
+
+    if (!colorObj.code.hex || !colorObj.color) {
+      setNoInputModal(true);
+    } else if (colorObj.code.hex[0] !== "#" || colorObj.code.hex.length !== 7) {
+      setProperHexModal(true);
+    } else {
+      axiosWithAuth()
+        .put(`/api/colors/${colorId}`, colorObj)
+        .then(res => {
+          updateColors(
+            colors.map(color => (color.id === colorId ? colorObj : color))
+          );
+          reset(
+            [editing, colorName, colorCode],
+            [setEditing, setColorName, setColorCode]
+          );
+        })
+        .catch(err => console.log(err));
+    }
   };
 
   const deleteColor = deletingColor => {
-    // make a delete request to delete this color
     axiosWithAuth()
       .delete(`/api/colors/${deletingColor.id}`)
       .then(res => {
@@ -51,15 +62,19 @@ const ColorList = ({ colors, updateColors }) => {
 
   const addColor = e => {
     e.preventDefault();
-    if (!newColor.code.hex || !newColor.color) {
+    const colorObj = {
+      color: colorName,
+      code: { hex: colorCode }
+    };
+    if (!colorObj.code.hex || !colorObj.color) {
       setNoInputModal(true);
-    } else if (newColor.code.hex[0] !== "#" || newColor.code.hex.length !== 7) {
+    } else if (colorObj.code.hex[0] !== "#" || colorObj.code.hex.length !== 7) {
       setProperHexModal(true);
     } else {
       axiosWithAuth()
-        .post("/api/colors", newColor)
+        .post("/api/colors", colorObj)
         .then(res => {
-          updateColors([...colors, newColor]);
+          updateColors([...colors, colorObj]);
           setAdding(false);
         })
         .catch(err => console.log(err));
@@ -88,9 +103,19 @@ const ColorList = ({ colors, updateColors }) => {
             localStorage.removeItem("token");
             history.push("/");
           }}
+          className="icon"
         />
         <p>colors</p>
-        <AddCircle onClick={() => setAdding(!adding)} />
+        <AddCircle
+          onClick={() => {
+            reset(
+              [editing, colorName, colorCode],
+              [setEditing, setColorName, setColorCode]
+            );
+            setAdding(!adding);
+          }}
+          className="icon"
+        />
       </div>
       <hr />
       <ul>
@@ -105,7 +130,7 @@ const ColorList = ({ colors, updateColors }) => {
                 }}
               >
                 x
-              </span>{" "}
+              </span>
               {color.color}
             </span>
             <div
@@ -121,22 +146,15 @@ const ColorList = ({ colors, updateColors }) => {
           <label>
             color name:
             <input
-              onChange={e =>
-                setColorToEdit({ ...colorToEdit, color: e.target.value })
-              }
-              value={colorToEdit.color}
+              onChange={e => handleChange(e, setColorName)}
+              value={colorName}
             />
           </label>
           <label>
             hex code:
             <input
-              onChange={e =>
-                setColorToEdit({
-                  ...colorToEdit,
-                  code: { hex: e.target.value }
-                })
-              }
-              value={colorToEdit.code.hex}
+              onChange={e => handleChange(e, setColorCode)}
+              value={colorCode}
             />
           </label>
           <div className="button-row">
@@ -147,27 +165,20 @@ const ColorList = ({ colors, updateColors }) => {
       )}
       <div className="spacer" />
       {adding && (
-        <form onSubmit={e => addColor(e)}>
+        <form onSubmit={addColor}>
           <legend>add new color</legend>
           <label>
             color name:
             <input
-              onChange={e =>
-                setNewColor({ ...newColor, color: e.target.value })
-              }
-              value={newColor.color}
+              onChange={e => handleChange(e, setColorName)}
+              value={colorName}
             />
           </label>
           <label>
             hex code:
             <input
-              onChange={e =>
-                setNewColor({
-                  ...newColor,
-                  code: { hex: e.target.value }
-                })
-              }
-              value={newColor.code.hex}
+              onChange={e => handleChange(e, setColorCode)}
+              value={colorCode}
             />
           </label>
           <div className="button-row">
