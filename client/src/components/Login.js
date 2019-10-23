@@ -62,11 +62,13 @@ const Login = props => {
           onChange={e => handleChange(e, setUsername)}
           placeholder="username"
           value={username}
+          type="text"
         />
         <Input
           onChange={e => handleChange(e, setPassword)}
           placeholder="password"
           value={password}
+          type="password"
         />
         <Button type="submit" variant={buttonVariant}>
           Submit
